@@ -1,0 +1,13 @@
+/home/ec2-user
+[ec2-user@ip-172-31-16-70 ~]$ pytest --connection=local /home/ec2-user/test_server.py
+/home/ec2-user/.local/lib/python3.9/site-packages/_testinfra_renamed.py:5: DeprecationWarning: testinfra package has been renamed to pytest-testinfra. Please `pip install pytest-testinfra` and `pip uninstall testinfra` and update your package requirements to avoid this message
+  warnings.warn((
+=================================================================== test session starts ====================================================================
+platform linux -- Python 3.9.16, pytest-8.3.3, pluggy-1.5.0
+rootdir: /home/ec2-user
+plugins: testinfra-10.1.1, testinfra-6.0.0
+collected 3 items                                                                                                                                          
+
+test_server.py ...                                                                                                                                   [100%]
+
+==================================================================== 3 passed in 0.07s =====================================================================

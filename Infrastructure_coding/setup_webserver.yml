@@ -1,0 +1,54 @@
+---
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Install NGINX
+      yum:
+        name: nginx
+        state: present
+
+    - name: Start and enable NGINX
+      service:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Create an HTML page
+      copy:
+        dest: /usr/share/nginx/html/index.html
+        content: |
+          <html>
+          <head><title>Hello World</title></head>
+          <body><h1>Hello World!</h1></body>
+          </html>
+
+    - name: Create SSL directory
+      file:
+        path: /etc/nginx/ssl
+        state: directory
+        mode: 0700
+
+    - name: Generate a self-signed SSL certificate
+      command: openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout /etc/nginx/ssl/nginx.key -out /etc/nginx/ssl/nginx.crt -subj "/CN=example.com"
+
+    - name: Configure NGINX to enforce HTTPS
+      copy:
+        dest: /etc/nginx/conf.d/default.conf
+        content: |
+          server {
+              listen 80;
+              server_name _;
+              return 301 https://$host$request_uri;
+          }
+          server {
+              listen 443 ssl;
+              ssl_certificate /etc/nginx/ssl/nginx.crt;
+              ssl_certificate_key /etc/nginx/ssl/nginx.key;
+              root /usr/share/nginx/html;
+              index index.html;
+          }
+
+    - name: Restart NGINX
+      service:
+        name: nginx
+        state: restarted
